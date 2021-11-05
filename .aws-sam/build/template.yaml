@@ -36,13 +36,37 @@ Resources:
       - x86_64
       Policies:
       - DynamoDBCrudPolicy:
-          TableName: movies-table
+          TableName:
+            Ref: MoviesTable
       Environment:
         Variables:
-          TABLE_NAME: movies-table
+          TABLE_NAME:
+            Ref: MoviesTable
       Events:
         HelloWorld:
           Type: Api
           Properties:
             Path: /movie
             Method: POST
+  GetMovie:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: GetMovie
+      Handler: app.getMovie
+      Runtime: nodejs14.x
+      Architectures:
+      - x86_64
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: MoviesTable
+      Environment:
+        Variables:
+          TABLE_NAME:
+            Ref: MoviesTable
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /movie
+            Method: GET

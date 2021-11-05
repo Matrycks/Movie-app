@@ -2,8 +2,8 @@
 // const url = 'http://checkip.amazonaws.com/';
 let response;
 
-import dynamoManager from "./managers/dynamoManager";
-import dataManager from "./managers/dataManager";
+const dynamoManager = require("./managers/dynamoManager");
+const dataManager = require("./managers/dataManager");
 
 /**
  *
@@ -17,15 +17,15 @@ import dataManager from "./managers/dataManager";
  * @returns {Object} object - API Gateway Lambda Proxy Output Format
  *
  */
-export async function addMovie(event, context) {
+exports.addMovie = async (event, context) => {
   try {
-    // const movieDetailsJson = JSON.parse(event.body);
-    // const movieDetailsPoco = dataManager.createMoviePoco(movieDetailsJson);
-    // const result = dynamoManager.saveMovie(movieDetailsPoco);
+    const movieDetailsJson = JSON.parse(event.body);
+    const movieDetailsPoco = dataManager.createMoviePoco(movieDetailsJson);
+    const result = await dynamoManager.saveMovie(movieDetailsPoco);
 
     response = {
       statusCode: 200,
-      body: JSON.stringify({ movieId: "1", title: "Matrix" }),
+      body: JSON.stringify(result),
     };
   } catch (err) {
     console.log(err);
@@ -33,4 +33,21 @@ export async function addMovie(event, context) {
   }
 
   return response;
-}
+};
+
+exports.getMovie = async (event, context) => {
+  try {
+    const movieId = event.queryStringParameters.movieId;
+    const movieData = await dynamoManager.getMovie(movieId);
+
+    response = {
+      statusCode: 200,
+      body: JSON.stringify(movieData),
+    };
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
+
+  return response;
+};

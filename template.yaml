@@ -29,6 +29,7 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1
+
   AddMovie:
     Type: AWS::Serverless::Function
     Properties:
@@ -39,36 +40,37 @@ Resources:
         - x86_64
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: movies-table
+            TableName: !Ref MoviesTable
       Environment:
         Variables:
-          TABLE_NAME: movies-table
+          TABLE_NAME: !Ref MoviesTable
       Events:
         HelloWorld:
           Type: Api
           Properties:
             Path: /movie
             Method: POST
-  # GetMovie:
-  #   Type: AWS::Serverless::Function
-  #   Properties:
-  #     CodeUri: movie-service/
-  #     Handler: app.getMovie
-  #     Runtime: nodejs14.x
-  #     Architectures:
-  #       - x86_64
-  #     Policies:
-  #       - DynamoDBCrudPolicy:
-  #           TableName: movies-table
-  #     Environment:
-  #       Variables:
-  #         TABLE_NAME: movies-table
-  #     Events:
-  #       HelloWorld:
-  #         Type: Api
-  #         Properties:
-  #           Path: /movie/${movieId}
-  #           Method: GET
+
+  GetMovie:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: movie-service/
+      Handler: app.getMovie
+      Runtime: nodejs14.x
+      Architectures:
+        - x86_64
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref MoviesTable
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref MoviesTable
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /movie
+            Method: GET
 # Outputs:
 #   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
 #   # Find out more about other implicit resources you can reference within SAM
